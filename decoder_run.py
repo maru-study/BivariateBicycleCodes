@@ -6,7 +6,7 @@ import pickle
 from scipy.sparse import coo_matrix
 
 # number of Monte Carlo trials
-num_trials = 50000
+num_trials = 1000
 
 error_rate = 0.003
 
@@ -27,6 +27,10 @@ with open(title, 'rb') as fp:
 
 # file to save simulation results
 fname = './CODE_' + str(n) + '_' + str(k) + '_' + str(d) + '/result'
+import os
+
+# Ensure directory for result file exists
+os.makedirs(os.path.dirname(fname), exist_ok=True)
 
 # format of the result file
 # column 1: error rate
@@ -377,6 +381,7 @@ for trial in range(num_trials):
 	assert(HdecZ.shape[0]==len(syndrome_history))
 	bpdZ.decode(syndrome_history)
 	low_weight_error = bpdZ.osdw_decoding
+	# low_weight_error = np.zeros(HZ.shape[1],dtype=int)
 
 	assert(len(low_weight_error)==HZ.shape[1])
 	syndrome_history_augmented_guessed = (HZ @ low_weight_error) % 2
@@ -401,7 +406,7 @@ for trial in range(num_trials):
 		assert(HdecX.shape[0]==len(syndrome_history))
 		bpdX.decode(syndrome_history)
 		low_weight_error = bpdX.osdw_decoding
-
+		# low_weight_error = np.zeros(HX.shape[1],dtype=int)
 		assert(len(low_weight_error)==HX.shape[1])
 		syndrome_history_augmented_guessed = (HX @ low_weight_error) % 2
 		syndrome_final_logical_guessed = syndrome_history_augmented_guessed[first_logical_rowX:(first_logical_rowX+k)]
