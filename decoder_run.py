@@ -6,7 +6,7 @@ import pickle
 from scipy.sparse import coo_matrix
 
 # number of Monte Carlo trials
-num_trials = 1000
+num_trials = 1
 
 error_rate = 0.003
 
@@ -378,9 +378,15 @@ for trial in range(num_trials):
 		for row in range(1,num_cycles+2):
 			syndrome_history[pos[row]]+= syndrome_history_copy[pos[row-1]]
 	syndrome_history%= 2
+
+
+	print("syndrome_history shape Z:",syndrome_history.shape)
+
+
 	assert(HdecZ.shape[0]==len(syndrome_history))
 	bpdZ.decode(syndrome_history)
 	low_weight_error = bpdZ.osdw_decoding
+	print("HZ shape:",HZ.shape)
 	# low_weight_error = np.zeros(HZ.shape[1],dtype=int)
 
 	assert(len(low_weight_error)==HZ.shape[1])
@@ -403,6 +409,11 @@ for trial in range(num_trials):
 			for row in range(1,num_cycles+2):
 				syndrome_history[pos[row]]+= syndrome_history_copy[pos[row-1]]
 		syndrome_history%= 2
+
+
+		print("syndrome_history shape X:",syndrome_history.shape)
+
+
 		assert(HdecX.shape[0]==len(syndrome_history))
 		bpdX.decode(syndrome_history)
 		low_weight_error = bpdX.osdw_decoding
