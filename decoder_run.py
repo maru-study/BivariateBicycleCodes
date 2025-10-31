@@ -8,7 +8,7 @@ from scipy.sparse import coo_matrix
 # number of Monte Carlo trials
 num_trials = 1
 
-error_rate = 0.003
+error_rate = 0.001
 
 
 # code parameters and number of syndrome cycles
@@ -366,11 +366,14 @@ for trial in range(num_trials):
 	ec_resultX = False
 	
 	# correct Z errors 
+	import pprint
 	syndrome_history,state,syndrome_map,err_cntZ = simulate_circuitZ(circ+cycle+cycle)
 	assert(len(syndrome_history)==n2*(num_cycles+2))
 	state_data_qubits = [state[lin_order[q]] for q in data_qubits]
 	syndrome_final_logical = (lx @ state_data_qubits) % 2
 	# apply syndrome sparsification map
+	pprint.pprint(syndrome_map)
+	print("syndrome_history:",syndrome_history.size)
 	syndrome_history_copy = syndrome_history.copy()
 	for c in Xchecks:
 		pos = syndrome_map[c]
@@ -378,15 +381,15 @@ for trial in range(num_trials):
 		for row in range(1,num_cycles+2):
 			syndrome_history[pos[row]]+= syndrome_history_copy[pos[row-1]]
 	syndrome_history%= 2
+	print("syndrome_history:",syndrome_history.size)
 
-
-	print("syndrome_history shape Z:",syndrome_history.shape)
+	# print("syndrome_history shape Z:",syndrome_history.shape)
 
 
 	assert(HdecZ.shape[0]==len(syndrome_history))
 	bpdZ.decode(syndrome_history)
 	low_weight_error = bpdZ.osdw_decoding
-	print("HZ shape:",HZ.shape)
+	# print("HZ shape:",HZ.shape)
 	# low_weight_error = np.zeros(HZ.shape[1],dtype=int)
 
 	assert(len(low_weight_error)==HZ.shape[1])
@@ -411,7 +414,7 @@ for trial in range(num_trials):
 		syndrome_history%= 2
 
 
-		print("syndrome_history shape X:",syndrome_history.shape)
+		# print("syndrome_history shape X:",syndrome_history.shape)
 
 
 		assert(HdecX.shape[0]==len(syndrome_history))

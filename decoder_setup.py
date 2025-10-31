@@ -243,11 +243,11 @@ for t in range(1,6):
 t=6
 for q in Zchecks:
 	cycle.append(('MeasZ',q))
-assert(not(sX[t]=='idle'))
+assert(not(sX[t]=='idle')) # sX[6] = 2
 data_qubits_cnoted_in_this_round = []
 for control in Xchecks:
 	direction = sX[t]
-	target = nbs[(control,direction)]
+	target = nbs[(control,direction)] # control: (Xcheck, control), target: (Xcheck, A3[control,:])
 	U[lin_order[target],:] = (U[lin_order[target],:] + U[lin_order[control],:]) % 2
 	cycle.append(('CNOT',control,target))
 	data_qubits_cnoted_in_this_round.append(target)
